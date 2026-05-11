@@ -34,7 +34,7 @@ const embedSrc = `${gatewayBase}/embed/zholy-embed.js?${new URLSearchParams({
 const companyProfile = {
   name: "ZHOLY",
   description:
-    "ZHOLY (pronounced 'Zero Voice') is an AI voice assistant platform that embeds onto any website. Visitors click the mic button and speak naturally — the AI reads the page, answers questions, navigates by voice, and captures leads. Built for businesses that want voice AI without complexity.",
+    "ZHOLY is an AI Sales Concierge platform. It embeds onto any website as a conversational interface that perceives the page, answers product questions, navigates by voice, captures leads, and books demos — in real time, in 30+ languages. Built and incorporated in Switzerland by Polare Group Sàrl (CHE-221.062.769). Not open source. Paid SaaS product with LOCAL / CLOUD / SOVEREIGN deployment tiers.",
   services: [
     "Embeddable voice AI widget for websites",
     "Natural language page navigation and product discovery",
