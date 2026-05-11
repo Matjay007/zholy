@@ -98,16 +98,14 @@ const hideGTStyle = `
 })();
 `.trim();
 
-/** MINIMAL embed brand overlay. The embed handles its own positioning via
- *  pos=bottom-center URL param — we don't fight its CSS. Only thing we
- *  override is the icon disc inside the pill (swap generic mic for ZHOLY orb)
- *  and lift the cyan accent to match brand. */
+/** MINIMAL embed brand overlay. The embed handles its own positioning
+ *  (pos=bottom-center) and its own dark-glass surface — DO NOT override
+ *  --tl-primary; that variable colors the call-bar background, not just
+ *  accents. Only override the icon disc inside the pill. */
 const styleEmbedChrome = `(function(){
   var s = document.createElement("style");
   s.textContent =
-    /* Brand-tint accent variables for the embed */
-    "#zrovoice-root{--tl-primary:#4CE9E9!important;--tl-primary-light:#7DEFEF!important;}" +
-    /* Swap the mic icon disc with the ZHOLY orb image */
+    /* Swap the mic icon disc with the ZHOLY orb image — brand-only */
     "#zrovoice-root #tl-trigger .tl-trigger-icon{background:#0E0F12 url('/zholy-orb.png') center/cover no-repeat!important;box-shadow:0 0 18px rgba(76,233,233,0.35),inset 0 0 0 1px rgba(76,233,233,0.3)!important;}" +
     "#zrovoice-root #tl-trigger .tl-trigger-icon svg{display:none!important;}";
   (document.head || document.documentElement).appendChild(s);
