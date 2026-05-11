@@ -66,9 +66,9 @@ const TILES: Tile[] = [
     tag: "RAG",
   },
   {
-    t: "Open source",
-    p: "Node.js gateway + Postgres + ES-module embed. Audit it. Swap any layer (STT, LLM, TTS, vision) for your own endpoints.",
-    tag: "OPEN",
+    t: "Developer hooks",
+    p: "window.ZRO_VOICE_EMBED_API · zro:action CustomEvents · window.ZRO_COMPANY_PROFILE JSON. No proprietary SDK. Swap any layer (STT, LLM, TTS, vision) for your own endpoints.",
+    tag: "DEV HOOKS",
     art: "code",
   },
   {

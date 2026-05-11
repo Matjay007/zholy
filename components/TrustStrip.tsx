@@ -38,12 +38,7 @@ export default function TrustStrip() {
           <span className="flex items-center gap-2">
             <BadgeDot /> EU Residency
           </span>
-          <span className="flex items-center gap-2">
-            <BadgeDot /> Open Source
-          </span>
-          <span className="flex items-center gap-2">
-            <BadgeDot /> Self-Hostable
-          </span>
+
         </div>
 
         <Link

@@ -13,8 +13,6 @@ const ITEMS = [
   "Barge-In + Push-To-Talk",
   "Type-To-Chat",
   "Per-Tenant RAG",
-  "Open Source",
-  "Self-Hostable",
   "A Swiss Company",
   "GDPR Article 9",
 ];
