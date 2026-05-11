@@ -1,33 +1,52 @@
 "use client";
 import { useEffect, useState } from "react";
 
-/* Live conversation demo — shows the agent talking, scrolling, highlighting in
- * a faux website preview. Loops every ~20s. This is the visual differentiator
- * Foyer doesn't have: PROOF the agent acts on the page, not just talks. */
+/* LiveDemo — AI Sales Concierge flow.
+ * 5 turns showing the flagship: visitor lands on pricing page,
+ * agent qualifies, highlights, books a demo, captures lead.
+ * Every action chip is a real zro:action dispatch shape. */
 
 type Turn = {
-  who: "v" | "a";   // visitor / agent
+  who: "v" | "a";
   text: string;
-  action?: {        // optional DOM-action visualization
-    type: "scroll" | "highlight" | "navigate";
+  action?: {
+    type: "scroll" | "highlight" | "navigate" | "book" | "collect-lead";
     target: string;
   };
 };
 
 const SCRIPT: Turn[] = [
-  { who: "v", text: "What languages do you support?" },
-  { who: "a", text: "30+ — English, French, Spanish, German, Italian, Portuguese, Dutch, Arabic, Mandarin, Japanese and more. I auto-detect per utterance, so you can switch mid-conversation.", action: { type: "scroll", target: "Languages section" } },
-  { who: "v", text: "Can you see this page?" },
-  { who: "a", text: "Yes — every turn I get a semantic snapshot of what's visible on screen: headings, prices, buttons. Watch me highlight where this is explained.", action: { type: "highlight", target: "DOM semantics card" } },
-  { who: "v", text: "Show me the FAQ." },
-  { who: "a", text: "Scrolling to the FAQ now. Ask me anything once you've read it — or just speak.", action: { type: "navigate", target: "#faq" } },
+  {
+    who: "a",
+    text:
+      "Hi — looks like you're comparing tiers. Want me to walk you through what's included in each? I can highlight the right one for your use case.",
+  },
+  {
+    who: "v",
+    text: "What's the difference between CLOUD and SOVEREIGN?",
+  },
+  {
+    who: "a",
+    text:
+      "SOVEREIGN runs on a dedicated EU node or your own infra via Docker — useful when voice biometrics need to stay on home turf. CLOUD is our managed Swiss data centre. Let me highlight the SOVEREIGN card.",
+    action: { type: "highlight", target: "SOVEREIGN tier card" },
+  },
+  {
+    who: "v",
+    text: "Can I book a demo for next Tuesday at 2pm?",
+  },
+  {
+    who: "a",
+    text:
+      "Tuesday at 2pm CET works. I'm dispatching the booking now and capturing your details so we can confirm by email.",
+    action: { type: "book", target: "cal.com · tue 14:00 CET" },
+  },
 ];
 
 export default function LiveDemo() {
   const [step, setStep] = useState(0);
   const [typed, setTyped] = useState("");
 
-  // Type out the current turn, then advance after a pause
   useEffect(() => {
     const turn = SCRIPT[step];
     setTyped("");
@@ -37,8 +56,10 @@ export default function LiveDemo() {
       setTyped(turn.text.slice(0, i));
       if (i >= turn.text.length) {
         clearInterval(type);
-        // pause then advance
-        setTimeout(() => setStep((s) => (s + 1) % SCRIPT.length), turn.who === "a" ? 2200 : 900);
+        setTimeout(
+          () => setStep((s) => (s + 1) % SCRIPT.length),
+          turn.who === "a" ? 2200 : 900
+        );
       }
     }, turn.who === "v" ? 28 : 22);
     return () => clearInterval(type);
@@ -57,8 +78,7 @@ export default function LiveDemo() {
       <div className="wrap relative">
         <div className="grid md:grid-cols-[260px,1fr] gap-12 mb-16">
           <div>
-            <p className="label">[ Live ]</p>
-            {/* Pulse dot */}
+            <p className="label">[ Flagship · AI Sales Concierge ]</p>
             <p className="mt-3 flex items-center gap-2 font-mono text-[11px] tracking-widest text-cyan/80">
               <span
                 style={{
@@ -70,11 +90,12 @@ export default function LiveDemo() {
                   animation: "pulse 1.4s ease-in-out infinite",
                 }}
               />
-              REAL CONVERSATION
+              LIVE FLOW
             </p>
           </div>
           <h2 className="serif text-[44px] sm:text-[56px] leading-[1.05] tracking-tighter text-cream max-w-3xl">
-            Listen. Speak. <span className="text-muted">Act on the page.</span>
+            Qualify. Highlight.<br />
+            <span className="text-muted">Book. Capture.</span>
           </h2>
         </div>
 
@@ -84,18 +105,16 @@ export default function LiveDemo() {
             className="rounded-2xl border border-line overflow-hidden"
             style={{ background: "linear-gradient(180deg, #1F2025 0%, #16171B 100%)" }}
           >
-            {/* Browser chrome */}
             <div className="flex items-center gap-2 px-4 py-3 border-b border-line bg-ink-2/60">
               <span style={{ width: 11, height: 11, borderRadius: "50%", background: "#FF5F57" }} />
               <span style={{ width: 11, height: 11, borderRadius: "50%", background: "#FEBC2E" }} />
               <span style={{ width: 11, height: 11, borderRadius: "50%", background: "#28C840" }} />
               <span className="ml-4 font-mono text-[11px] text-cream/40 tracking-wider">
-                zholy.ai — voice session
+                zholy.ai — sales concierge session
               </span>
             </div>
 
-            {/* Transcript area */}
-            <div className="p-6 space-y-4 min-h-[360px]">
+            <div className="p-6 space-y-4 min-h-[420px]">
               {SCRIPT.slice(0, step + 1).map((turn, i) => {
                 const isLast = i === step;
                 const text = isLast ? typed : turn.text;
@@ -139,11 +158,11 @@ export default function LiveDemo() {
                         <div className="mt-2 flex items-center gap-2 font-mono text-[10px] tracking-widest text-cyan/80 uppercase">
                           <ActionGlyph type={turn.action.type} />
                           <span>
-                            {turn.action.type === "scroll" && `Scrolling to ${turn.action.target}`}
-                            {turn.action.type === "highlight" &&
-                              `Highlighting ${turn.action.target}`}
-                            {turn.action.type === "navigate" &&
-                              `Navigating to ${turn.action.target}`}
+                            {turn.action.type === "scroll" && `Scroll → ${turn.action.target}`}
+                            {turn.action.type === "highlight" && `Highlight → ${turn.action.target}`}
+                            {turn.action.type === "navigate" && `Navigate → ${turn.action.target}`}
+                            {turn.action.type === "book" && `Dispatch book → ${turn.action.target}`}
+                            {turn.action.type === "collect-lead" && `Collect lead → ${turn.action.target}`}
                           </span>
                         </div>
                       )}
@@ -162,45 +181,36 @@ export default function LiveDemo() {
             </div>
           </div>
 
-          {/* Right column — what makes this different */}
+          {/* Right column — proof points */}
           <div className="flex flex-col justify-center gap-6">
             <p className="font-mono text-[11px] tracking-widest text-cyan uppercase">
               What you just saw
             </p>
-<ul className="space-y-5">
+            <ul className="space-y-5">
               <li className="flex gap-4">
-                <span className="font-mono text-[11px] tracking-widest text-muted pt-1.5 w-8 shrink-0">
-                  01
-                </span>
+                <span className="font-mono text-[11px] tracking-widest text-muted pt-1.5 w-8 shrink-0">01</span>
                 <div>
-                  <p className="text-cream font-medium mb-1">Grounded in your content</p>
+                  <p className="text-cream font-medium mb-1">Grounded answers</p>
                   <p className="text-cream/65 text-sm leading-relaxed">
-                    Answers come from your tenant&apos;s vector store — your real site content,
-                    top-3 retrieval, logged per answer.
+                    Tier details come from your per-tenant vector store — your real pricing, your real positioning. Top-3 retrieval logged for every reply.
                   </p>
                 </div>
               </li>
               <li className="flex gap-4">
-                <span className="font-mono text-[11px] tracking-widest text-muted pt-1.5 w-8 shrink-0">
-                  02
-                </span>
-                <div>
-                  <p className="text-cream font-medium mb-1">Mid-call language auto-switch</p>
-                  <p className="text-cream/65 text-sm leading-relaxed">
-                    Visitor switches from English to French mid-sentence — the agent follows
-                    without a reset.
-                  </p>
-                </div>
-              </li>
-              <li className="flex gap-4">
-                <span className="font-mono text-[11px] tracking-widest text-muted pt-1.5 w-8 shrink-0">
-                  03
-                </span>
+                <span className="font-mono text-[11px] tracking-widest text-muted pt-1.5 w-8 shrink-0">02</span>
                 <div>
                   <p className="text-cream font-medium mb-1">DOM action in real time</p>
                   <p className="text-cream/65 text-sm leading-relaxed">
-                    Scrolls, highlights, navigates — every action emits a zro:action event your
-                    code can hook.
+                    The agent emits <code className="font-mono text-cyan">zro:action</code> events. Your handlers scroll, highlight, navigate, book — execution stays in your code.
+                  </p>
+                </div>
+              </li>
+              <li className="flex gap-4">
+                <span className="font-mono text-[11px] tracking-widest text-muted pt-1.5 w-8 shrink-0">03</span>
+                <div>
+                  <p className="text-cream font-medium mb-1">Booking + lead in-call</p>
+                  <p className="text-cream/65 text-sm leading-relaxed">
+                    Booking handler (Cal.com integration shipping in Phase 2) fires inside the conversation. Lead webhook OUT to your CRM the moment intent is confirmed.
                   </p>
                 </div>
               </li>
@@ -216,7 +226,7 @@ export default function LiveDemo() {
   );
 }
 
-function ActionGlyph({ type }: { type: "scroll" | "highlight" | "navigate" }) {
+function ActionGlyph({ type }: { type: Turn["action"] extends infer A ? A extends { type: infer T } ? T : never : never }) {
   const common = { width: 12, height: 12, fill: "none", stroke: "#4CE9E9", strokeWidth: 2 } as const;
   if (type === "scroll")
     return (
@@ -228,6 +238,22 @@ function ActionGlyph({ type }: { type: "scroll" | "highlight" | "navigate" }) {
     return (
       <svg viewBox="0 0 24 24" {...common}>
         <rect x="3" y="3" width="18" height="18" rx="3" />
+      </svg>
+    );
+  if (type === "book")
+    return (
+      <svg viewBox="0 0 24 24" {...common}>
+        <rect x="3" y="5" width="18" height="16" rx="2" />
+        <line x1="3" y1="10" x2="21" y2="10" />
+        <line x1="8" y1="3" x2="8" y2="7" />
+        <line x1="16" y1="3" x2="16" y2="7" />
+      </svg>
+    );
+  if (type === "collect-lead")
+    return (
+      <svg viewBox="0 0 24 24" {...common}>
+        <circle cx="12" cy="8" r="4" />
+        <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" />
       </svg>
     );
   return (

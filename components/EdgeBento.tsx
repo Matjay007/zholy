@@ -1,7 +1,8 @@
 "use client";
+import RoadmapChip from "./RoadmapChip";
 
-/* Bento mosaic — varied tile sizes break Foyer's uniform 3-column rhythm.
- * Hero tile (vision) spans 2x2, others are 1x1 or 2x1. */
+/* Bento mosaic — Sales Concierge as the hero 3x2 tile.
+ * Roadmap features carry chips inline. */
 
 type Tile = {
   t: string;
@@ -9,35 +10,34 @@ type Tile = {
   tag: string;
   span?: "lg" | "wide" | "tall";
   bg?: "ink" | "cream" | "glow";
-  art?: "vision" | "wave" | "globe" | "shield" | "code";
+  art?: "concierge" | "vision" | "wave" | "globe" | "shield" | "code";
+  roadmap?: boolean;
 };
 
 const TILES: Tile[] = [
-  // Hero tile — vision (the differentiator) — 2x2
   {
-    t: "Sees what they see.",
-    p: "Optional camera mode runs a local moondream vision model. Visitor points at a product, a shelf, an error screen — ZHOLY describes it in your catalogue's language. No frame leaves the host you choose.",
-    tag: "CAMERA VISION",
+    t: "AI Sales Concierge.",
+    p: "The flagship workflow. Visitor lands, agent qualifies intent, answers product questions, highlights pricing live, books the demo, fires the CRM event, remembers the visitor on return. One conversation, the whole motion.",
+    tag: "FLAGSHIP",
     span: "lg",
     bg: "glow",
-    art: "vision",
+    art: "concierge",
   },
   {
-    t: "Acts on the page",
-    p: "Smooth-scrolls to anchors, pulse-highlights elements, opens accordions. Every action fires a zro:action event your code can hook.",
-    tag: "DOM ACTION",
+    t: "Sees + acts on the surface",
+    p: "DOM semantic snapshot every turn. Smooth-scroll, pulse-highlight, anchor jump, accordion open — agent emits zro:action events, your code executes.",
+    tag: "PERCEPTION + ACTION",
     art: "wave",
   },
   {
-    t: "30+ languages, mid-call",
-    p: "Visitor slips from English into French — agent follows without a reset. Auto-detect per utterance.",
-    tag: "MULTILINGUAL",
-    art: "globe",
+    t: "Camera vision",
+    p: "Local moondream model identifies what the visitor points at — products, error screens, parts. Frames stay on your chosen host.",
+    tag: "VISION",
+    art: "vision",
   },
-  // Cream invert — breaks dark monotony — 2x1
   {
     t: "A Swiss company.",
-    p: "ZHOLY is Polare Group Sàrl (CHE-221.062.769), incorporated and operated in Geneva. Voice biometrics are GDPR Article 9 special-category data under Swiss nFADP. EU residency on request, on-prem via Docker. Not a US startup with a Swiss data centre.",
+    p: "Polare Group Sàrl (CHE-221.062.769), incorporated and operated in Geneva. Voice biometrics are GDPR Article 9 special-category data under Swiss nFADP. EU residency on request, on-prem via Docker. Not a US startup with a Swiss data centre.",
     tag: "SWISS COMPANY",
     span: "wide",
     bg: "cream",
@@ -45,45 +45,48 @@ const TILES: Tile[] = [
   },
   {
     t: "Interrupt-friendly",
-    p: "Barge-in cuts TTS the moment you start speaking. Push-to-talk for noisy environments.",
+    p: "Barge-in cuts TTS the moment you start speaking. Push-to-talk for noisy environments. Type-to-chat for keyboard users.",
     tag: "BARGE-IN",
   },
   {
-    t: "Sounds like you",
-    p: "50+ studio voices. Clone your brand voice from a short reference clip. Switch live from the dashboard.",
-    tag: "VOICE",
+    t: "Switches language mid-call",
+    p: "30+ languages with auto-detect per utterance. Visitor slips from English into French — agent follows without a reset.",
+    tag: "MULTILINGUAL",
   },
   {
-    t: "Books, captures, converts",
-    p: "Cal.com / Calendly / Google Calendar in-call. Lead webhooks to HubSpot, Salesforce, Pipedrive, Attio, Notion, Airtable, Google Sheets.",
+    t: "Booking, lead, CRM",
+    p: "Cal.com / Calendly / Google Calendar handlers ship from the dispatch layer. Generic webhook OUT to your CRM the moment intent is captured.",
     tag: "BOOKING",
     span: "wide",
+    roadmap: true,
   },
   {
     t: "Grounded — no hallucination",
-    p: "Per-tenant vector store, top-3 retrieval, the retrieved snippet logged for every answer.",
+    p: "Per-tenant vector store, top-3 retrieval, the snippet logged for every answer. Banking, medical, legal refused by default.",
     tag: "RAG",
   },
   {
     t: "Open source",
-    p: "Node.js gateway + ES-module embed + Postgres. Audit it. Swap any layer.",
+    p: "Node.js gateway + Postgres + ES-module embed. Audit it. Swap any layer (STT, LLM, TTS, vision) for your own endpoints.",
     tag: "OPEN",
     art: "code",
   },
   {
+    t: "Hears how they feel",
+    p: "Emotion routes the agent's tone — slower and lower when frustrated, brighter when excited. SenseVoice provides the signal, ElevenLabs handles the prosody.",
+    tag: "EMOTION",
+    roadmap: true,
+  },
+  {
     t: "Developer hooks",
-    p: "window.ZRO_VOICE_EMBED_API · zro:action CustomEvents · window.ZRO_COMPANY_PROFILE JSON. No proprietary SDK.",
+    p: "window.ZRO_VOICE_EMBED_API · zro:action CustomEvents · window.ZRO_COMPANY_PROFILE. No proprietary SDK to learn.",
     tag: "HOOKS",
   },
   {
-    t: "Hears how they feel",
-    p: "Emotion routes the agent's tone — slows down, leads with empathy when the visitor sounds frustrated.",
-    tag: "EMOTION",
-  },
-  {
-    t: "One login across ZHOLY",
-    p: "Single sign-on, single billing, single support across the ZHOLY ecosystem.",
-    tag: "SSO",
+    t: "Voice cloning",
+    p: "Clone your brand voice from a short reference clip via ElevenLabs. Gated to the SOVEREIGN tier.",
+    tag: "VOICE",
+    roadmap: true,
   },
 ];
 
@@ -98,7 +101,6 @@ export default function EdgeBento() {
           </h2>
         </div>
 
-        {/* Bento grid — 6 columns on desktop, tiles span 1-4 cols / 1-2 rows */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 auto-rows-[200px]">
           {TILES.map((tile, i) => (
             <BentoTile key={i} tile={tile} />
@@ -110,7 +112,6 @@ export default function EdgeBento() {
 }
 
 function BentoTile({ tile }: { tile: Tile }) {
-  // Tailwind grid spans
   let span = "lg:col-span-2 lg:row-span-1";
   if (tile.span === "lg") span = "lg:col-span-3 lg:row-span-2";
   else if (tile.span === "wide") span = "lg:col-span-3 lg:row-span-1";
@@ -132,12 +133,11 @@ function BentoTile({ tile }: { tile: Tile }) {
         isGlow
           ? {
               background:
-                "radial-gradient(ellipse 80% 70% at 30% 20%, rgba(76,233,233,0.12), rgba(28,29,34,0.95) 70%)",
+                "radial-gradient(ellipse 80% 70% at 30% 20%, rgba(76,233,233,0.14), rgba(28,29,34,0.95) 70%)",
             }
           : undefined
       }
     >
-      {/* Optional inline art */}
       {tile.art && (
         <div className="absolute right-4 top-4 opacity-30 pointer-events-none">
           <TileArt kind={tile.art} cream={isCream} />
@@ -163,6 +163,7 @@ function BentoTile({ tile }: { tile: Tile }) {
           } ${isCream ? "text-[#1C1D22]" : "text-cream"}`}
         >
           {tile.t}
+          {tile.roadmap && <RoadmapChip />}
         </h3>
         <p
           className={`mt-3 text-sm leading-relaxed ${
@@ -180,11 +181,21 @@ function TileArt({
   kind,
   cream,
 }: {
-  kind: "vision" | "wave" | "globe" | "shield" | "code";
+  kind: "concierge" | "vision" | "wave" | "globe" | "shield" | "code";
   cream: boolean;
 }) {
   const stroke = cream ? "#1C1D22" : "#4CE9E9";
   const common = { width: 56, height: 56, fill: "none", stroke, strokeWidth: 1.4 } as const;
+  if (kind === "concierge")
+    return (
+      <svg viewBox="0 0 64 56" {...common} width={84} height={72}>
+        {/* Concentric arcs evoking a sales funnel + conversation */}
+        <path d="M4 28 Q32 4 60 28" />
+        <path d="M12 32 Q32 14 52 32" />
+        <path d="M20 36 Q32 24 44 36" />
+        <circle cx="32" cy="42" r="3" fill={stroke} />
+      </svg>
+    );
   if (kind === "vision")
     return (
       <svg viewBox="0 0 24 24" {...common}>

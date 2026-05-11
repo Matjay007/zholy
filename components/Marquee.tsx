@@ -1,20 +1,21 @@
 "use client";
 
+/* Marquee chips — leads with the new tagline + concierge framing. */
 const ITEMS = [
-  "Interaction Agent",
+  "Interfaces That Act",
+  "AI Sales Concierge",
   "Perceives The Surface",
   "Navigates In Real Time",
   "Dispatches Actions",
   "Narrates Every Step",
-  "DOM Semantics",
+  "30+ Languages · Mid-Call Switch",
   "Camera Vision",
-  "Real-Time RAG",
-  "30+ Languages",
-  "Mid-Call Switch",
-  "Barge-In",
+  "Barge-In + Push-To-Talk",
+  "Type-To-Chat",
+  "Per-Tenant RAG",
   "Open Source",
   "Self-Hostable",
-  "Swiss Company",
+  "A Swiss Company",
   "GDPR Article 9",
 ];
 
@@ -22,9 +23,15 @@ export default function Marquee() {
   const stream = [...ITEMS, ...ITEMS, ...ITEMS];
   return (
     <div className="relative overflow-hidden border-y border-line bg-ink-2/40 backdrop-blur">
-      <div className="flex gap-12 py-4 animate-marquee whitespace-nowrap" style={{ width: "max-content" }}>
+      <div
+        className="flex gap-12 py-4 animate-marquee whitespace-nowrap"
+        style={{ width: "max-content" }}
+      >
         {stream.map((item, i) => (
-          <span key={i} className="font-mono text-xs tracking-widest uppercase text-cream/60 flex items-center gap-12">
+          <span
+            key={i}
+            className="font-mono text-xs tracking-widest uppercase text-cream/60 flex items-center gap-12"
+          >
             <span>· {item}</span>
           </span>
         ))}

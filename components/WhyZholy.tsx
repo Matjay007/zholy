@@ -1,35 +1,39 @@
 "use client";
 
-/* WHY ZHOLY — repositioned. Four stamps of the interaction-agent layer.
- * Each stamp = a verb the agent actually does today (verified in gateway). */
+/* Why ZHOLY — 4 stamps reframed around the interaction-agent thesis.
+ * Sub-line updated to "WHY INTERFACES THAT ACT BEAT INTERFACES THAT TALK". */
 
 const POINTS = [
   {
     n: "01",
     title: "Perceives",
     line: "Sees what's on screen.",
-    body: "Every turn ZHOLY receives a semantic snapshot of the surface — headings, prices, buttons, sections, visibility. Optional camera mode adds a local moondream vision model so the agent can identify physical objects the visitor points at.",
+    body:
+      "Every turn ZHOLY receives a semantic snapshot of the surface — headings, prices, buttons, sections, visibility. Optional camera mode adds a local moondream vision model so the agent can identify physical objects the visitor points at.",
     foyer: "Generic voice bots answer from a knowledge base, not the surface in front of them.",
   },
   {
     n: "02",
     title: "Navigates",
     line: "Moves through the interface.",
-    body: "Smooth-scroll to anchors, pulse-highlight elements as it talks, jump between routes. The conversation and the interface stay in lockstep, not parallel.",
+    body:
+      "Smooth-scroll to anchors, pulse-highlight elements as it talks, jump between routes. The conversation and the interface stay in lockstep, not parallel.",
     foyer: "Chat widgets sit in a corner. They never touch the page.",
   },
   {
     n: "03",
     title: "Dispatches",
     line: "Fires actions your code executes.",
-    body: "Every interaction emits a zro:action CustomEvent — navigate, scroll, highlight, fill-form, click, submit. Your handler decides what runs. The agent owns the conversation; you keep the keys to your app.",
+    body:
+      "The agent emits zro:action CustomEvents — navigate, scroll, highlight, fill-form, click, submit, book. Your whitelisted handlers decide what runs. Auditable. Safe. Predictable. The agent owns the conversation; you keep the keys to your app.",
     foyer: "Closed widgets force you through their proprietary action API.",
   },
   {
     n: "04",
     title: "A Swiss company.",
-    line: "Incorporated, built, and hosted in Switzerland.",
-    body: "ZHOLY is Polare Group Sàrl (CHE-221.062.769), a Geneva-incorporated company — not a US startup with a Swiss data centre. Voice biometrics treated as GDPR Article 9 special-category data under Swiss nFADP. EU residency on request, on-prem via Docker.",
+    line: "Incorporated. Built. Hosted in Switzerland.",
+    body:
+      "ZHOLY is Polare Group Sàrl (CHE-221.062.769), a Geneva-incorporated company — not a US startup with a Swiss data centre. Voice biometrics treated as GDPR Article 9 special-category data under Swiss nFADP. EU residency on request, on-prem via Docker.",
     foyer: "US-incorporated competitors fall under US-cloud jurisdiction by default.",
   },
 ];
@@ -50,7 +54,7 @@ export default function WhyZholy() {
           <div>
             <p className="label">[ Why ZHOLY ]</p>
             <p className="mt-3 font-mono text-[11px] tracking-widest text-cyan/80">
-              FOUR THINGS A VOICE CHATBOT CAN&apos;T DO
+              WHY INTERFACES THAT ACT BEAT INTERFACES THAT TALK
             </p>
           </div>
           <h2 className="serif text-[44px] sm:text-[64px] leading-[1.0] tracking-tighter text-cream max-w-3xl">

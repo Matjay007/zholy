@@ -2,58 +2,72 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import RoadmapChip from "./RoadmapChip";
 
-/* Yearly = 20% off effective rate, billed once. */
+/* LOCAL / CLOUD / SOVEREIGN — deployment-model naming.
+ * Each bullet is either verified-shipping today, or carries a RoadmapChip. */
 const PLANS = [
   {
-    id: "free",
-    name: "TIER 01",
+    id: "local",
+    name: "LOCAL",
+    pitch: "Self-host. Individual. Trial.",
     monthly: 0,
     yearlyPerMonth: 0,
     yearlyTotal: 0,
     minutes: "100 voice minutes · 1 agent",
     bullets: [
-      "Speech-to-speech via SenseVoice + OpenAI",
-      "30+ languages (auto-detected per utterance)",
-      "Per-tenant RAG (vector store)",
-      "ZHOLY watermark on widget",
+      { text: "Speech-to-speech via SenseVoice + OpenAI", roadmap: false },
+      { text: "30+ languages, auto-detected per utterance", roadmap: false },
+      { text: "Per-tenant RAG (vector store)", roadmap: false },
+      { text: "DOM action dispatch (zro:action events)", roadmap: false },
+      { text: "Self-host with Docker", roadmap: false },
+      { text: "ZHOLY watermark on widget", roadmap: false },
     ],
     cta: { label: "Start free", href: "/signup", style: "ghost" as const },
     highlight: false,
   },
   {
-    id: "two",
-    name: "TIER 02",
+    id: "cloud",
+    name: "CLOUD",
+    pitch: "Hosted SaaS. Teams. Production.",
     monthly: 79,
     yearlyPerMonth: 63,
     yearlyTotal: 756,
     minutes: "800 voice minutes · 3 agents",
     bullets: [
-      "Everything in Tier 01",
-      "No watermark",
-      "Full transcripts + analytics",
-      "URL ingest (up to 25 pages)",
-      "DOM action + highlight",
-      "Barge-in + push-to-talk",
+      { text: "Everything in LOCAL", roadmap: false },
+      { text: "No watermark", roadmap: false },
+      { text: "Hosted on zholy.ai (Swiss data centre)", roadmap: false },
+      { text: "Full transcripts + Postgres-backed analytics", roadmap: false },
+      { text: "URL ingest (up to 25 pages per job)", roadmap: false },
+      { text: "Barge-in + push-to-talk", roadmap: false },
+      { text: "Slack + email lead notifications", roadmap: true },
+      { text: "Cal.com booking handler", roadmap: true },
+      { text: "Generic CRM webhook OUT", roadmap: true },
     ],
-    cta: { label: "Get started", href: "/signup?plan=two", style: "cyan" as const },
+    cta: { label: "Get started", href: "/signup?plan=cloud", style: "cyan" as const },
     highlight: true,
   },
   {
-    id: "three",
-    name: "TIER 03",
+    id: "sovereign",
+    name: "SOVEREIGN",
+    pitch: "EU residency. On-prem. SLA.",
     monthly: 299,
     yearlyPerMonth: 199,
     yearlyTotal: 2388,
-    minutes: "10,000 voice minutes · unlimited agents",
+    minutes: "10,000+ minutes · unlimited agents",
     bullets: [
-      "Everything in Tier 02",
-      "Camera vision (moondream)",
-      "Custom company-profile JSON",
-      "zro:action developer hooks",
-      "Priority support",
+      { text: "Everything in CLOUD", roadmap: false },
+      { text: "Dedicated EU node or on-prem Docker", roadmap: false },
+      { text: "Camera vision (moondream, local)", roadmap: false },
+      { text: "Custom company-profile JSON", roadmap: false },
+      { text: "zro:action developer hooks + audit log", roadmap: false },
+      { text: "GDPR Article 9 voice biometrics handling", roadmap: false },
+      { text: "Voice cloning (ElevenLabs)", roadmap: true },
+      { text: "Multi-step workflow planner", roadmap: true },
+      { text: "Priority support + SLA", roadmap: false },
     ],
-    cta: { label: "Get started", href: "/signup?plan=three", style: "ghost" as const },
+    cta: { label: "Talk to us", href: "/signup?plan=sovereign", style: "ghost" as const },
     highlight: false,
   },
 ] as const;
@@ -99,8 +113,7 @@ export default function PricingTable() {
       {/* Cards */}
       <div className="grid md:grid-cols-3 gap-4">
         {PLANS.map((plan) => {
-          const price =
-            period === "yearly" ? plan.yearlyPerMonth : plan.monthly;
+          const price = period === "yearly" ? plan.yearlyPerMonth : plan.monthly;
           const yearlyHint =
             period === "yearly" && plan.yearlyTotal
               ? `$${plan.yearlyTotal.toLocaleString()} billed yearly · saves $${(
@@ -123,8 +136,11 @@ export default function PricingTable() {
                   ★ MOST POPULAR
                 </span>
               )}
-              <p className="font-mono text-[11px] tracking-widest text-ink/60 mb-2">
+              <p className="font-mono text-[11px] tracking-widest text-ink/60 mb-1">
                 {plan.name}
+              </p>
+              <p className="font-mono text-[10px] tracking-widest text-ink/40 mb-3 uppercase">
+                {plan.pitch}
               </p>
               <p className="serif text-5xl mb-1">
                 ${price}
@@ -134,7 +150,10 @@ export default function PricingTable() {
               <p className="text-ink/45 text-xs mb-6 min-h-[1em]">{yearlyHint}</p>
               <ul className="space-y-2 text-sm text-ink/80 mb-8 flex-1">
                 {plan.bullets.map((b) => (
-                  <li key={b}>· {b}</li>
+                  <li key={b.text} className="leading-relaxed">
+                    · {b.text}
+                    {b.roadmap && <RoadmapChip />}
+                  </li>
                 ))}
               </ul>
               <Link
@@ -158,7 +177,7 @@ export default function PricingTable() {
           { p: "+1,000 min", c: "$49" },
           { p: "+5,000 min", c: "$199" },
           { p: "+25,000 min", c: "$799" },
-          { p: "Enterprise / self-host", c: "Talk to us" },
+          { p: "Enterprise / on-prem", c: "Talk to us" },
         ].map((m) => (
           <div
             key={m.p}
