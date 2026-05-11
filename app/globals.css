@@ -1,0 +1,135 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #0d0d0d;
+  --ink-2: #141414;
+  --ink-3: #1c1c1c;
+  --cream: #f4f1ea;
+  --cream-2: #ebe7dd;
+  --muted: #8b847b;
+  --line: #262626;
+  --line-cream: #e8e2d9;
+  --cyan: #4ce9e9;
+  --violet: #7b5cff;
+  --amber: #f77c27;
+  --red: #e5484d;
+  --display: "DM Serif Display", Georgia, serif;
+  --sans: "Inter", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01", "cv01";
+}
+
+::selection { background: var(--cyan); color: var(--ink); }
+
+.serif { font-family: var(--display); font-weight: 400; }
+.mono { font-family: var(--mono); }
+
+.label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+.section { padding: 120px 0; position: relative; }
+
+@media (max-width: 720px) {
+  .wrap { padding: 0 20px; }
+  .section { padding: 80px 0; }
+}
+
+.hairline { height: 1px; background: var(--line); }
+.hairline-cream { height: 1px; background: var(--line-cream); }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 44px; padding: 0 22px;
+  font-family: var(--sans); font-size: 14px; font-weight: 500;
+  border-radius: 999px; cursor: pointer; transition: all 160ms ease;
+  border: 1px solid transparent; white-space: nowrap;
+}
+.btn-primary { background: var(--cream); color: var(--ink); }
+.btn-primary:hover { background: #fff; }
+.btn-ghost { background: transparent; color: var(--cream); border-color: rgba(244,241,234,0.18); }
+.btn-ghost:hover { border-color: rgba(244,241,234,0.4); }
+.btn-cyan { background: var(--cyan); color: var(--ink); }
+.btn-cyan:hover { box-shadow: 0 0 32px rgba(76,233,233,0.45); }
+.btn-arrow { transition: transform 160ms ease; }
+.btn:hover .btn-arrow { transform: translateX(3px); }
+
+.card-cream {
+  background: var(--cream); color: var(--ink);
+  border-radius: 18px; padding: 32px;
+  border: 1px solid var(--line-cream);
+}
+.card-ink {
+  background: var(--ink-2); color: var(--cream);
+  border-radius: 18px; padding: 32px;
+  border: 1px solid var(--line);
+}
+
+.aurora {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  z-index: 0;
+}
+.aurora::before, .aurora::after {
+  content: ""; position: absolute; border-radius: 50%;
+  filter: blur(110px); opacity: 0.55; mix-blend-mode: screen;
+  animation: aurora-pan 18s ease-in-out infinite;
+}
+.aurora::before {
+  width: 720px; height: 720px;
+  background: radial-gradient(closest-side, var(--cyan), transparent 70%);
+  top: -20%; left: -10%;
+}
+.aurora::after {
+  width: 640px; height: 640px;
+  background: radial-gradient(closest-side, var(--violet), transparent 70%);
+  bottom: -20%; right: -8%;
+  animation-delay: -8s;
+}
+.aurora-amber::before {
+  background: radial-gradient(closest-side, var(--amber), transparent 70%);
+}
+
+.grain {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0.18;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+.fade-up { opacity: 0; transform: translateY(8px); transition: opacity 600ms ease, transform 600ms ease; }
+.fade-up.in { opacity: 1; transform: translateY(0); }
+
+@keyframes aurora-pan {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(8%, -6%) scale(1.08); }
+  66%      { transform: translate(-6%, 4%) scale(0.96); }
+}
+
+.dotline {
+  height: 1px;
+  background: repeating-linear-gradient(to right, currentColor 0, currentColor 2px, transparent 2px, transparent 6px);
+  opacity: 0.5;
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(0.92); opacity: 0.7; }
+  100% { transform: scale(1.55); opacity: 0; }
+}

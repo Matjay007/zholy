@@ -1,0 +1,134 @@
+import type { Metadata } from "next";
+import "./globals.css";
+import { siteUrl } from "@/lib/publicSite";
+
+const canonical = siteUrl();
+
+export const metadata: Metadata = {
+  title: "ZHOLY — Your website finally speaks.",
+  description:
+    "ZHOLY — Voice AI for any website. One script tag turns your site into a conversation: speaks for your brand, navigates pages, captures leads, books appointments.",
+  metadataBase: new URL(canonical),
+  openGraph: {
+    title: "ZHOLY — Your website finally speaks.",
+    description: "ZHOLY — One embed. A full sales motion. Voice AI for any website.",
+    url: canonical,
+    siteName: "ZHOLY",
+    type: "website",
+  },
+  icons: { icon: "/voice/favicon.png", apple: "/voice/zholy-logo.png" },
+};
+
+const gatewayBase =
+  process.env.NEXT_PUBLIC_ZRO_GATEWAY_URL?.trim() || "http://127.0.0.1:8790";
+
+const embedSrc = `${gatewayBase}/embed/zholy-embed.js?${new URLSearchParams({
+  gateway: gatewayBase,
+  brand: "ZHOLY",
+  buttonText: "Talk to ZHOLY",
+  video: "1",
+}).toString()}`;
+
+const companyProfile = {
+  name: "ZHOLY",
+  description:
+    "ZHOLY (pronounced 'Zero Voice') is an AI voice assistant platform that embeds onto any website. Visitors click the mic button and speak naturally — the AI reads the page, answers questions, navigates by voice, and captures leads. Built for businesses that want voice AI without complexity.",
+  services: [
+    "Embeddable voice AI widget for websites",
+    "Natural language page navigation and product discovery",
+    "Video mode — visitor points camera at a product, AI identifies it",
+    "Multilingual voice support — auto-detects visitor language",
+    "Lead capture form after voice conversations",
+    "White-label and custom branding",
+    "Self-hostable — one server, your data",
+  ],
+  outOfScope: ["Banking", "Medical advice", "Legal advice"],
+  mustNotClaim: [
+    "Specific pricing not confirmed on this page",
+    "Features not listed here",
+  ],
+};
+
+const companyProfileScript = `window.ZRO_COMPANY_PROFILE=${JSON.stringify(companyProfile)};`;
+
+/** Restore saved language and set googtrans cookie so GT translates on load. */
+const langScript = `
+(function(){
+  try {
+    var l = localStorage.getItem("zro_lang") || "";
+    if (l) window.ZHOLY_LANG = l;
+    if (l && l !== "en") {
+      document.cookie = "googtrans=/en/" + l + "; path=/";
+      document.cookie = "googtrans=/en/" + l + "; path=/; domain=" + location.hostname;
+    } else if (!l || l === "en") {
+      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/";
+      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/; domain=" + location.hostname;
+    }
+  } catch(e) {}
+})();
+`.trim();
+
+/** Google Translate init — invisible widget, no toolbar. */
+const gTranslateInit = `
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: "en",
+    autoDisplay: false,
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+  }, "zro_gt_el");
+}
+`.trim();
+
+/** Inject CSS as early as possible to kill every GT UI element before paint. */
+const hideGTStyle = `
+(function(){
+  var s = document.createElement("style");
+  s.textContent =
+    ".goog-te-banner-frame,.skiptranslate{display:none!important;visibility:hidden!important;}" +
+    ".goog-te-gadget{display:none!important;}" +
+    ".goog-te-menu-frame{display:none!important;}" +
+    "body{top:0!important;}" +
+    "#google_translate_element{display:none!important;}";
+  (document.head || document.documentElement).appendChild(s);
+  // Re-apply after GT loads (it may try to push body down)
+  setTimeout(function(){(document.head || document.documentElement).appendChild(s.cloneNode(true));}, 800);
+  setTimeout(function(){(document.head || document.documentElement).appendChild(s.cloneNode(true));}, 2000);
+})();
+`.trim();
+
+/** Hide the embed's floating pill trigger (we use our own orb) and
+ *  centre the active-call bar in the viewport instead of bottom-right. */
+const suppressEmbedPill = `(function(){
+  var s = document.createElement("style");
+  s.textContent =
+    /* Hide the floating launch pill — orb is the only trigger */
+    "#zrovoice-root #tl-trigger{display:none!important;}" +
+    /* Strip the chrome container's pill styling so only the call bar shows */
+    "#zrovoice-root{position:fixed!important;inset:0!important;right:auto!important;bottom:auto!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:auto!important;max-width:min(560px,92vw)!important;pointer-events:none!important;background:transparent!important;border:none!important;box-shadow:none!important;}" +
+    /* The active call bar — centred, larger, fully interactive */
+    "#zrovoice-root #tl-call-bar{pointer-events:auto!important;position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;top:auto!important;transform:none!important;width:100%!important;max-width:560px!important;padding:18px 22px!important;border-radius:20px!important;box-shadow:0 24px 80px rgba(0,0,0,0.55),0 0 0 1px rgba(76,233,233,0.18)!important;backdrop-filter:blur(16px)!important;background:rgba(28,29,34,0.92)!important;}" +
+    /* Transcript / video surface — also centred under the call bar */
+    "#zrovoice-root #tl-transcript,#zrovoice-root #tl-video-surface{pointer-events:auto!important;}";
+  (document.head || document.documentElement).appendChild(s);
+})();`.trim();
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: langScript }} />
+        <script dangerouslySetInnerHTML={{ __html: companyProfileScript }} />
+        <script dangerouslySetInnerHTML={{ __html: hideGTStyle }} />
+        <script dangerouslySetInnerHTML={{ __html: suppressEmbedPill }} />
+        <script dangerouslySetInnerHTML={{ __html: gTranslateInit }} />
+        <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async />
+      </head>
+      <body>
+        {/* GT mount point — always hidden */}
+        <div id="zro_gt_el" style={{ display: "none" }} />
+        {children}
+        <script type="module" src={embedSrc} async />
+      </body>
+    </html>
+  );
+}

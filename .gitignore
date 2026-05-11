@@ -1,0 +1,30 @@
+# deps
+node_modules/
+
+# build
+.next/
+out/
+build/
+
+# env (NEVER commit secrets)
+.env
+.env.local
+.env.production
+.env*.local
+
+# IDE / OS
+.DS_Store
+.vscode/
+*.log
+
+# prisma generated
+prisma/migrations/*/migration_lock.toml
+
+# Secrets — Apple Sign-In, JWT, anything that ends in a private-key suffix
+*.p8
+*.pem
+*.key
+AuthKey_*.p8
+
+# Avoid leaking .env.example values that may have secrets baked in by mistake
+# (we keep .env.example IF it's a template, but verify before unstaging)
