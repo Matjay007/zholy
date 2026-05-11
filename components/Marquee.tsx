@@ -1,22 +1,21 @@
 "use client";
 
 const ITEMS = [
-  "Voice Concierge",
-  "Sees The Page",
+  "Interaction Agent",
+  "Perceives The Surface",
+  "Navigates In Real Time",
+  "Dispatches Actions",
+  "Narrates Every Step",
+  "DOM Semantics",
   "Camera Vision",
-  "Scrolls + Highlights",
   "Real-Time RAG",
-  "Mid-Call Language Switch",
-  "Barge-In Natural",
-  "Push-To-Talk Mode",
   "30+ Languages",
+  "Mid-Call Switch",
+  "Barge-In",
   "Open Source",
   "Self-Hostable",
-  "Swiss Sovereign",
+  "Swiss Company",
   "GDPR Article 9",
-  "Per-Tenant Vector Store",
-  "Custom Action Hooks",
-  "One Script Tag",
 ];
 
 export default function Marquee() {

@@ -1,24 +1,28 @@
 import Link from "next/link";
 
-/* Swiss-sovereign trust strip — sits below the hero so it's the first thing
- * a visitor sees scrolling. The flag is rendered as inline SVG (no asset),
- * matching the official 5:5 proportions and the cyan accent colour. */
+/* Swiss company trust strip — ZHOLY is incorporated in Switzerland
+ * (Polare Group Sàrl · CHE-221.062.769), not merely hosted there. The
+ * flag, company line, and compliance badges sit above the fold to make
+ * that distinction visible. */
 export default function TrustStrip() {
   return (
     <section
-      aria-label="Swiss-sovereign infrastructure"
+      aria-label="Swiss company infrastructure"
       className="relative border-y border-line bg-elevated/40 backdrop-blur-md"
     >
       <div className="wrap py-8 flex flex-wrap items-center justify-between gap-8">
-        {/* Swiss flag + tagline */}
+        {/* Swiss flag + company line */}
         <div className="flex items-center gap-4">
-          <SwissFlag size={40} />
+          <SwissFlag size={44} />
           <div>
             <p className="font-mono text-[11px] tracking-widest text-cyan/80 uppercase">
-              Swiss-sovereign
+              A Swiss Company
             </p>
             <p className="font-serif text-xl text-cream leading-tight mt-0.5">
-              Hosted in Switzerland.
+              Built, hosted, and incorporated in Switzerland.
+            </p>
+            <p className="font-mono text-[10px] tracking-widest text-cream/40 uppercase mt-1.5">
+              Polare Group Sàrl · CHE-221.062.769 · Geneva, CH
             </p>
           </div>
         </div>
@@ -32,7 +36,7 @@ export default function TrustStrip() {
             <BadgeDot /> GDPR Art. 9
           </span>
           <span className="flex items-center gap-2">
-            <BadgeDot /> EU Residency Available
+            <BadgeDot /> EU Residency
           </span>
           <span className="flex items-center gap-2">
             <BadgeDot /> Open Source
@@ -43,7 +47,7 @@ export default function TrustStrip() {
         </div>
 
         <Link
-          href="#edge"
+          href="#why"
           className="hidden lg:inline-flex items-center gap-2 font-mono text-[11px] tracking-widest text-cyan uppercase hover:text-cream transition-colors"
         >
           Why it matters <span aria-hidden>→</span>

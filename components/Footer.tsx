@@ -55,7 +55,7 @@ export default function Footer() {
         <span>ZHOLY · POLARE GROUP SÀRL · CHE-221.062.769</span>
         <span className="flex items-center gap-3">
           <FooterSwissFlag />
-          <span>HOSTED IN SWITZERLAND · GDPR · SWISS nFADP · SOVEREIGN INFRA</span>
+          <span>A SWISS COMPANY · GENEVA · GDPR · SWISS nFADP · CHE-221.062.769</span>
         </span>
       </div>
     </footer>

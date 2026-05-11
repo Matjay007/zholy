@@ -23,8 +23,8 @@ const config: Config = {
         red: "#E5484D",
       },
       fontFamily: {
-        serif: ["DM Serif Display", "Georgia", "serif"],
-        sans: ["Inter", "system-ui", "sans-serif"],
+        serif: ["Fraunces", "DM Serif Display", "Georgia", "serif"],
+        sans: ["Satoshi", "Inter", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
       letterSpacing: {

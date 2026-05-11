@@ -96,19 +96,28 @@ const hideGTStyle = `
 })();
 `.trim();
 
-/** Hide the embed's floating pill trigger (we use our own orb) and
- *  centre the active-call bar in the viewport instead of bottom-right. */
-const suppressEmbedPill = `(function(){
+/** Pill anchored BOTTOM-CENTRE (Foyer's tl-pos-bottom-center pattern).
+ *  Mic icon replaced with the ZHOLY orb image (background-image swap on the
+ *  icon disc; the inner SVG is hidden, so the brand mark is what visitors see). */
+const styleEmbedChrome = `(function(){
   var s = document.createElement("style");
   s.textContent =
-    /* Hide the floating launch pill — orb is the only trigger */
-    "#zrovoice-root #tl-trigger{display:none!important;}" +
-    /* Strip the chrome container's pill styling so only the call bar shows */
-    "#zrovoice-root{position:fixed!important;inset:0!important;right:auto!important;bottom:auto!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:auto!important;max-width:min(560px,92vw)!important;pointer-events:none!important;background:transparent!important;border:none!important;box-shadow:none!important;}" +
-    /* The active call bar — centred, larger, fully interactive */
-    "#zrovoice-root #tl-call-bar{pointer-events:auto!important;position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;top:auto!important;transform:none!important;width:100%!important;max-width:560px!important;padding:18px 22px!important;border-radius:20px!important;box-shadow:0 24px 80px rgba(0,0,0,0.55),0 0 0 1px rgba(76,233,233,0.18)!important;backdrop-filter:blur(16px)!important;background:rgba(28,29,34,0.92)!important;}" +
-    /* Transcript / video surface — also centred under the call bar */
-    "#zrovoice-root #tl-transcript,#zrovoice-root #tl-video-surface{pointer-events:auto!important;}";
+    /* Anchor bottom-centre of the viewport */
+    "#zrovoice-root{position:fixed!important;top:auto!important;right:auto!important;bottom:24px!important;left:50%!important;transform:translateX(-50%)!important;pointer-events:none!important;background:transparent!important;border:none!important;box-shadow:none!important;z-index:2147483646!important;}" +
+    /* Persistent launch pill — dark glass, cyan hairline */
+    "#zrovoice-root #tl-trigger{pointer-events:auto!important;display:inline-flex!important;align-items:center!important;gap:12px!important;padding:8px 24px 8px 8px!important;border-radius:9999px!important;background:rgba(28,29,34,0.92)!important;color:#EBEAE6!important;font-family:var(--font-satoshi,'Satoshi',system-ui,sans-serif)!important;font-weight:600!important;font-size:14px!important;letter-spacing:0.01em!important;box-shadow:0 20px 60px rgba(0,0,0,0.45),0 0 0 1px rgba(76,233,233,0.25)!important;-webkit-backdrop-filter:blur(16px)!important;backdrop-filter:blur(16px)!important;transition:transform 160ms ease,box-shadow 160ms ease!important;cursor:pointer!important;}" +
+    "#zrovoice-root #tl-trigger:hover{transform:translateY(-2px)!important;box-shadow:0 28px 80px rgba(0,0,0,0.55),0 0 0 1px rgba(76,233,233,0.5)!important;}" +
+    /* Icon disc — show the ZHOLY orb image (kills the generic mic) */
+    "#zrovoice-root #tl-trigger .tl-trigger-icon{width:40px!important;height:40px!important;border-radius:50%!important;background:#0E0F12 url('/zholy-orb.png') center/cover no-repeat!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;box-shadow:0 0 24px rgba(76,233,233,0.4),inset 0 0 0 1px rgba(76,233,233,0.3)!important;flex-shrink:0!important;}" +
+    /* Hide the generic mic SVG inside the disc */
+    "#zrovoice-root #tl-trigger .tl-trigger-icon svg{display:none!important;}" +
+    /* Soft cyan breathing pulse around the icon disc */
+    "#zrovoice-root #tl-trigger .tl-trigger-icon::after{content:''!important;position:absolute!important;width:40px!important;height:40px!important;border-radius:50%!important;border:1px solid rgba(76,233,233,0.4)!important;animation:zholy-pulse 2.4s ease-out infinite!important;pointer-events:none!important;}" +
+    "@keyframes zholy-pulse{0%{transform:scale(1);opacity:1}100%{transform:scale(1.6);opacity:0}}" +
+    /* Active call bar — same surface, sits where the pill was (bottom-centre) */
+    "#zrovoice-root #tl-call-bar{pointer-events:auto!important;padding:12px 18px!important;border-radius:9999px!important;box-shadow:0 24px 80px rgba(0,0,0,0.55),0 0 0 1px rgba(76,233,233,0.25)!important;-webkit-backdrop-filter:blur(16px)!important;backdrop-filter:blur(16px)!important;background:rgba(28,29,34,0.92)!important;}" +
+    "#zrovoice-root #tl-transcript{pointer-events:auto!important;}" +
+    "#zrovoice-root #tl-video-surface{pointer-events:auto!important;}";
   (document.head || document.documentElement).appendChild(s);
 })();`.trim();
 
@@ -119,7 +128,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: langScript }} />
         <script dangerouslySetInnerHTML={{ __html: companyProfileScript }} />
         <script dangerouslySetInnerHTML={{ __html: hideGTStyle }} />
-        <script dangerouslySetInnerHTML={{ __html: suppressEmbedPill }} />
+        <script dangerouslySetInnerHTML={{ __html: styleEmbedChrome }} />
         <script dangerouslySetInnerHTML={{ __html: gTranslateInit }} />
         <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async />
       </head>
