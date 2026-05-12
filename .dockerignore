@@ -1,4 +1,20 @@
+# Dependencies
+node_modules/
+
+# Build output (rebuilt inside Docker)
+.next/
+
+# Local env files (injected at runtime via Docker env_file)
+.env
 .env.local
-node_modules
-.next
+.env.*.local
+
+# Dev / CI artifacts
 *.log
+.DS_Store
+.git/
+coverage/
+.turbo/
+
+# Large test/demo assets not needed in production
+public/demo-videos/
