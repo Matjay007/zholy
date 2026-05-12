@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireSession } from "@/lib/session";
 
 const PREVIEW_TEXT = "Hey, I'm your voice assistant. Ask me anything and I'll help you out.";
 
 export async function POST(req: NextRequest) {
+  const session = await requireSession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const { voice_id, provider } = await req.json().catch(() => ({}));
   if (!voice_id) return NextResponse.json({ error: "Missing voice_id" }, { status: 400 });
 

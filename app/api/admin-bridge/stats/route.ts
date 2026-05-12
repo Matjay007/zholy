@@ -16,13 +16,11 @@ export const dynamic = "force-dynamic";
 
 function verifyBridgeAuth(req: Request, body: string): boolean {
   const key = process.env.ZHOLY_ADMIN_BRIDGE_KEY;
-  if (!key) {
-    // If key is not set, fall back to admin secret for local dev
-    const adminSecret = process.env.ADMIN_SECRET;
-    if (!adminSecret) return true;
-    return req.headers.get("x-admin-secret") === adminSecret;
-  }
-  return verifyRequest(req, body);
+  if (key) return verifyRequest(req, body);
+  const adminSecret = process.env.ADMIN_SECRET;
+  // SECURITY: both keys absent → deny. Never open-access in production.
+  if (!adminSecret) return false;
+  return req.headers.get("x-admin-secret") === adminSecret;
 }
 
 export async function GET(req: Request) {
