@@ -60,13 +60,33 @@ const VOICES = [
   { provider: "kokoro", id: "am_michael", name: "Michael (Kokoro)", desc: "Self-hosted, open source" },
 ];
 
-const MODELS = [
-  { id: "gpt-4o-mini", name: "GPT-4o Mini", desc: "Fast & affordable, great for most agents" },
-  { id: "gpt-4o", name: "GPT-4o", desc: "Most capable, best for complex conversations" },
-  { id: "gpt-4-turbo", name: "GPT-4 Turbo", desc: "Powerful, lower cost than GPT-4o" },
-  { id: "claude-sonnet-4-6", name: "Claude Sonnet 4.6", desc: "Anthropic — nuanced, thoughtful responses" },
-  { id: "llama3:8b", name: "Llama 3 8B (self-hosted)", desc: "Private, runs on your VPS" },
-  { id: "mistral", name: "Mistral 7B (self-hosted)", desc: "Fast self-hosted option" },
+interface ModelOption {
+  group: string;
+  provider: string;
+  id: string;
+  name: string;
+  desc: string;
+}
+
+const MODELS: ModelOption[] = [
+  // ── LOCAL (Ollama self-hosted) ──────────────────────────────────────────────
+  { group: "LOCAL",     provider: "ollama",    id: "gemma4:e4b",                           name: "Gemma 4 E4B (local)",       desc: "Self-hosted — Google Gemma 4, vision-capable, 4B params" },
+  { group: "LOCAL",     provider: "ollama",    id: "gemma4:26b-a4b-it-q4_K_M",            name: "Gemma 4 26B MoE (GPU)",     desc: "Self-hosted GPU server required — best local quality" },
+  // ── TOGETHER AI ────────────────────────────────────────────────────────────
+  { group: "Together",  provider: "together",  id: "google/gemma-4-31b-it",               name: "Gemma 4 31B",               desc: "Google — Together.ai cloud, strongest Gemma 4" },
+  { group: "Together",  provider: "together",  id: "meta-llama/Meta-Llama-4-Scout-17B-16E-Instruct", name: "Llama 4 Scout 17B", desc: "Meta — fast MoE, 16 experts, long context" },
+  { group: "Together",  provider: "together",  id: "Qwen/Qwen3-72B",                      name: "Qwen3 72B",                 desc: "Alibaba — top open-source 72B model" },
+  { group: "Together",  provider: "together",  id: "deepseek-ai/DeepSeek-V3",             name: "DeepSeek V3",               desc: "DeepSeek — 671B MoE, highly competitive" },
+  // ── FIREWORKS AI ───────────────────────────────────────────────────────────
+  { group: "Fireworks", provider: "fireworks", id: "accounts/fireworks/models/gemma4-26b-a4b-it", name: "Gemma 4 26B (Fireworks)", desc: "Google — Fireworks.ai, fast inference" },
+  { group: "Fireworks", provider: "fireworks", id: "accounts/fireworks/models/llama-v3p3-70b-instruct", name: "Llama 3.3 70B",  desc: "Meta — Fireworks.ai, reliable 70B" },
+  // ── MISTRAL (EU 🇫🇷) ────────────────────────────────────────────────────────
+  { group: "Mistral",   provider: "mistral",   id: "mistral-large-latest",                name: "Mistral Large 2 (EU 🇫🇷)",   desc: "European model — GDPR-friendly, Paris data centre" },
+  { group: "Mistral",   provider: "mistral",   id: "mistral-small-latest",                name: "Mistral Small 3 (EU 🇫🇷)",   desc: "Fast & cheap European model" },
+  // ── OPENAI ─────────────────────────────────────────────────────────────────
+  { group: "OpenAI",    provider: "openai",    id: "gpt-4.1",                             name: "GPT-4.1",                   desc: "OpenAI — latest, fast and highly capable" },
+  { group: "OpenAI",    provider: "openai",    id: "gpt-4o",                              name: "GPT-4o",                    desc: "OpenAI — multimodal, strong reasoning" },
+  { group: "OpenAI",    provider: "openai",    id: "gpt-4o-mini",                         name: "GPT-4o Mini",               desc: "OpenAI — fast and affordable" },
 ];
 
 const selectStyle: React.CSSProperties = {
@@ -95,7 +115,8 @@ export default function AgentConfigTabs({ agent, embedSnippet }: Props) {
   const [language, setLanguage] = useState(String(cfg.language || "en"));
   const [autoLanguage, setAutoLanguage] = useState(Boolean(cfg.auto_language));
   const [voiceId, setVoiceId] = useState(String(cfg.voice_id || "nova"));
-  const [llmModel, setLlmModel] = useState(String(cfg.llm_model || "gpt-4o-mini"));
+  const [llmModel, setLlmModel] = useState(String(cfg.llm_model || "gpt-4o"));
+  const [llmProvider, setLlmProvider] = useState(String(cfg.llm_provider || "openai"));
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saved" | "error">("idle");
 
@@ -132,14 +153,21 @@ export default function AgentConfigTabs({ agent, embedSnippet }: Props) {
     }
   }
 
+  function handleModelChange(modelId: string) {
+    setLlmModel(modelId);
+    const m = MODELS.find(m => m.id === modelId);
+    if (m) setLlmProvider(m.provider);
+  }
+
   async function saveModel() {
     setSaving(true);
     setSaveStatus("idle");
     try {
+      const selectedModel = MODELS.find(m => m.id === llmModel);
       const res = await fetch(`/api/agents/${agent.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ config: { ...cfg, llm_model: llmModel } }),
+        body: JSON.stringify({ config: { ...cfg, llm_model: llmModel, llm_provider: selectedModel?.provider || llmProvider } }),
       });
       if (res.ok) {
         setSaveStatus("saved");
@@ -252,14 +280,34 @@ export default function AgentConfigTabs({ agent, embedSnippet }: Props) {
               <label className="text-xs font-mono uppercase tracking-widest text-muted mb-2 block">
                 LLM Model
               </label>
-              <select value={llmModel} onChange={e => setLlmModel(e.target.value)} style={selectStyle}>
-                {MODELS.map(m => (
-                  <option key={m.id} value={m.id}>{m.name}</option>
-                ))}
+              <select value={llmModel} onChange={e => handleModelChange(e.target.value)} style={selectStyle}>
+                {["LOCAL", "Together", "Fireworks", "Mistral", "OpenAI"].map(group => {
+                  const groupModels = MODELS.filter(m => m.group === group);
+                  if (!groupModels.length) return null;
+                  return (
+                    <optgroup key={group} label={`── ${group} ──`}>
+                      {groupModels.map(m => (
+                        <option key={m.id} value={m.id}>{m.name}</option>
+                      ))}
+                    </optgroup>
+                  );
+                })}
               </select>
-              {MODELS.find(m => m.id === llmModel) && (
-                <p className="text-muted text-xs mt-1.5">{MODELS.find(m => m.id === llmModel)?.desc}</p>
-              )}
+              {(() => {
+                const selected = MODELS.find(m => m.id === llmModel);
+                if (!selected) return null;
+                return (
+                  <div className="mt-2 flex items-start gap-2">
+                    <span
+                      className="px-1.5 py-0.5 rounded text-xs font-mono flex-shrink-0 mt-0.5"
+                      style={{ background: "rgba(76,233,233,0.12)", color: "#4CE9E9" }}
+                    >
+                      {selected.group}
+                    </span>
+                    <p className="text-muted text-xs">{selected.desc}</p>
+                  </div>
+                );
+              })()}
             </div>
             <div className="flex items-center gap-3 pt-2">
               <button
