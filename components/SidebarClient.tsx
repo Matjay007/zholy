@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { signOut } from "@/lib/auth-client";
 
 /* ─── DS tokens ─── */
 const C = {
@@ -189,7 +190,7 @@ export default function SidebarClient({ plan, planMinutes, minutesUsed, email, n
             </p>
           </div>
           <button
-            onClick={() => router.push("/signout")}
+            onClick={() => signOut({ fetchOptions: { onSuccess: () => router.push("/signin") } })}
             title="Sign out"
             style={{ background: "none", border: "none", cursor: "pointer", padding: 4, display: "flex", color: C.text4 }}
           >
