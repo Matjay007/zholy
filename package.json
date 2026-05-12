@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "@sentry/nextjs": "^10.53.1",
     "@stripe/react-stripe-js": "^6.3.0",
     "@stripe/stripe-js": "^9.4.0",
     "@types/pg": "^8.20.0",
@@ -27,6 +28,7 @@
     "qrcode": "^1.5.4",
     "react": "19.0.0",
     "react-dom": "19.0.0",
+    "resend": "^6.12.3",
     "stripe": "^22.1.1",
     "tailwind-merge": "^2.6.0"
   },

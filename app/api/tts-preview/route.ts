@@ -1,11 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession } from "@/lib/session";
+import { getOrCreateTenant } from "@/lib/tenants";
+import { checkAIBudget, recordAIRequest } from "@/lib/ai-budget";
 
 const PREVIEW_TEXT = "Hey, I'm your voice assistant. Ask me anything and I'll help you out.";
 
 export async function POST(req: NextRequest) {
   const session = await requireSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const tenant = await getOrCreateTenant(session.sub, session.email, session.name);
+  const budget = await checkAIBudget(tenant.id, tenant.plan);
+  if (!budget.allowed) {
+    return NextResponse.json(
+      { error: "Daily AI limit reached", used: budget.used, limit: budget.limit },
+      { status: 429 },
+    );
+  }
 
   const { voice_id, provider } = await req.json().catch(() => ({}));
   if (!voice_id) return NextResponse.json({ error: "Missing voice_id" }, { status: 400 });
@@ -39,6 +50,7 @@ export async function POST(req: NextRequest) {
     }).catch(() => null);
     if (res?.ok) {
       const buf = await res.arrayBuffer();
+      await recordAIRequest(tenant.id);
       return new NextResponse(buf, { headers: { "Content-Type": "audio/mpeg" } });
     }
     return NextResponse.json({ error: "OpenAI TTS unavailable" }, { status: 503 });

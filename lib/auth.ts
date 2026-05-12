@@ -84,22 +84,31 @@ export const auth = betterAuth({
 });
 
 // ── Email helper ─────────────────────────────────────────────────────────────
+// Priority: RESEND_API_KEY → SMTP_HOST → log-only (dev)
 async function sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
-  const nodemailer = await import("nodemailer");
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT ?? "587"),
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
-  await transporter.sendMail({
-    from: process.env.SMTP_FROM ?? "noreply@zholy.app",
-    to,
-    subject,
-    html,
-  });
+  const from = process.env.SMTP_FROM ?? "ZHOLY <noreply@zholy.ai>";
+
+  if (process.env.RESEND_API_KEY) {
+    const { Resend } = await import("resend");
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const { error } = await resend.emails.send({ from, to, subject, html });
+    if (error) throw new Error(`Resend error: ${error.message}`);
+    return;
+  }
+
+  if (process.env.SMTP_HOST) {
+    const nodemailer = await import("nodemailer");
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT ?? "587"),
+      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+    });
+    await transporter.sendMail({ from, to, subject, html });
+    return;
+  }
+
+  // No email provider configured — log to stdout so nothing is silently swallowed
+  console.warn(`[email] No provider configured. Would send to ${to}: "${subject}"`);
 }
 
 export type Session = typeof auth.$Infer.Session;
