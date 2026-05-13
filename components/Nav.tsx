@@ -44,9 +44,7 @@ export default function Nav() {
     <header className="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-ink/70 border-b border-line">
       <div className="wrap flex items-center justify-between h-16">
         <Link href="#hero" className="flex items-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/zholy-wordmark.png" alt="ZHOLY" style={{ height: "22px", width: "auto" }} />
+          <ZholyWordmark />
         </Link>
         <nav className="hidden md:flex items-center gap-8 text-sm text-cream/80">
           <Link href="#how" className="hover:text-cream transition-colors">How it works</Link>
@@ -132,9 +130,40 @@ export default function Nav() {
   );
 }
 
+function ZholyWordmark() {
+  return (
+    <span
+      style={{
+        fontFamily: "var(--sans)",
+        fontWeight: 500,
+        fontSize: "15px",
+        letterSpacing: "0.28em",
+        color: "#ffffff",
+        textTransform: "uppercase",
+        lineHeight: 1,
+        userSelect: "none",
+      }}
+    >
+      ZHOLY
+    </span>
+  );
+}
+
 export function Logo({ size = 22 }: { size?: number }) {
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src="/zholy-wordmark.png" alt="ZHOLY" style={{ height: `${size}px`, width: "auto" }} />
+    <span
+      style={{
+        fontFamily: "var(--sans)",
+        fontWeight: 500,
+        fontSize: `${size}px`,
+        letterSpacing: "0.28em",
+        color: "#ffffff",
+        textTransform: "uppercase",
+        lineHeight: 1,
+        userSelect: "none",
+      }}
+    >
+      ZHOLY
+    </span>
   );
 }
