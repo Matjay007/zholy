@@ -70,23 +70,23 @@ interface ModelOption {
 
 const MODELS: ModelOption[] = [
   // ── LOCAL (Ollama self-hosted) ──────────────────────────────────────────────
-  { group: "LOCAL",     provider: "ollama",    id: "gemma4:e4b",                           name: "Gemma 4 E4B (local)",       desc: "Self-hosted — Google Gemma 4, vision-capable, 4B params" },
-  { group: "LOCAL",     provider: "ollama",    id: "gemma4:26b-a4b-it-q4_K_M",            name: "Gemma 4 26B MoE (GPU)",     desc: "Self-hosted GPU server required — best local quality" },
+  { group: "LOCAL",    provider: "ollama",   id: "gemma4:e4b",                                    name: "Gemma 4 E4B (local)",     desc: "Self-hosted — vision+chat, 4B" },
+  { group: "LOCAL",    provider: "ollama",   id: "gemma4:26b-a4b-it-q4_K_M",                     name: "Gemma 4 26B (GPU)",       desc: "Requires GPU server — 26B MoE" },
   // ── TOGETHER AI ────────────────────────────────────────────────────────────
-  { group: "Together",  provider: "together",  id: "google/gemma-4-31b-it",               name: "Gemma 4 31B",               desc: "Google — Together.ai cloud, strongest Gemma 4" },
-  { group: "Together",  provider: "together",  id: "meta-llama/Meta-Llama-4-Scout-17B-16E-Instruct", name: "Llama 4 Scout 17B", desc: "Meta — fast MoE, 16 experts, long context" },
-  { group: "Together",  provider: "together",  id: "Qwen/Qwen3-72B",                      name: "Qwen3 72B",                 desc: "Alibaba — top open-source 72B model" },
-  { group: "Together",  provider: "together",  id: "deepseek-ai/DeepSeek-V3",             name: "DeepSeek V3",               desc: "DeepSeek — 671B MoE, highly competitive" },
-  // ── FIREWORKS AI ───────────────────────────────────────────────────────────
-  { group: "Fireworks", provider: "fireworks", id: "accounts/fireworks/models/gemma4-26b-a4b-it", name: "Gemma 4 26B (Fireworks)", desc: "Google — Fireworks.ai, fast inference" },
-  { group: "Fireworks", provider: "fireworks", id: "accounts/fireworks/models/llama-v3p3-70b-instruct", name: "Llama 3.3 70B",  desc: "Meta — Fireworks.ai, reliable 70B" },
+  { group: "Together", provider: "together", id: "google/gemma-4-31B-it",                         name: "Gemma 4 31B 👁",          desc: "$0.20/$0.50 — vision+chat, best value open-source" },
+  { group: "Together", provider: "together", id: "Qwen/Qwen3.5-397B-A17B",                        name: "Qwen3.5 397B 👁",         desc: "$0.60/$3.60 — 397B MoE, vision+chat, strongest" },
+  { group: "Together", provider: "together", id: "Qwen/Qwen3-235B-A22B-Instruct-2507-tput",       name: "Qwen3 235B MoE",          desc: "$0.20/$0.60 — 235B, GPT-4o level" },
+  { group: "Together", provider: "together", id: "moonshotai/Kimi-K2.6",                          name: "Kimi K2.6",               desc: "$1.20/$4.50 — top coding+reasoning" },
+  { group: "Together", provider: "together", id: "deepseek-ai/DeepSeek-V4-Pro",                   name: "DeepSeek V4 Pro",         desc: "$2.10/$4.40 — strongest open-source reasoning" },
+  { group: "Together", provider: "together", id: "zai-org/GLM-5.1",                               name: "GLM-5.1",                 desc: "$1.40/$4.40 — Z.ai frontier model" },
+  { group: "Together", provider: "together", id: "meta-llama/Llama-3.3-70B-Instruct-Turbo",       name: "Llama 3.3 70B",           desc: "$0.88/$0.88 — reliable Meta model" },
   // ── MISTRAL (EU 🇫🇷) ────────────────────────────────────────────────────────
-  { group: "Mistral",   provider: "mistral",   id: "mistral-large-latest",                name: "Mistral Large 2 (EU 🇫🇷)",   desc: "European model — GDPR-friendly, Paris data centre" },
-  { group: "Mistral",   provider: "mistral",   id: "mistral-small-latest",                name: "Mistral Small 3 (EU 🇫🇷)",   desc: "Fast & cheap European model" },
+  { group: "Mistral",  provider: "mistral",  id: "mistral-large-latest",                          name: "Mistral Large 2 (EU 🇫🇷)", desc: "GDPR-friendly, Paris data centre" },
+  { group: "Mistral",  provider: "mistral",  id: "mistral-small-latest",                          name: "Mistral Small 3 (EU 🇫🇷)", desc: "Fast & cheap European model" },
   // ── OPENAI ─────────────────────────────────────────────────────────────────
-  { group: "OpenAI",    provider: "openai",    id: "gpt-4.1",                             name: "GPT-4.1",                   desc: "OpenAI — latest, fast and highly capable" },
-  { group: "OpenAI",    provider: "openai",    id: "gpt-4o",                              name: "GPT-4o",                    desc: "OpenAI — multimodal, strong reasoning" },
-  { group: "OpenAI",    provider: "openai",    id: "gpt-4o-mini",                         name: "GPT-4o Mini",               desc: "OpenAI — fast and affordable" },
+  { group: "OpenAI",   provider: "openai",   id: "gpt-4.1",                                       name: "GPT-4.1",                 desc: "Latest, fast and highly capable" },
+  { group: "OpenAI",   provider: "openai",   id: "gpt-4o",                                        name: "GPT-4o",                  desc: "Multimodal, strong reasoning" },
+  { group: "OpenAI",   provider: "openai",   id: "gpt-4o-mini",                                   name: "GPT-4o Mini",             desc: "Fast and affordable" },
 ];
 
 const selectStyle: React.CSSProperties = {
@@ -281,7 +281,7 @@ export default function AgentConfigTabs({ agent, embedSnippet }: Props) {
                 LLM Model
               </label>
               <select value={llmModel} onChange={e => handleModelChange(e.target.value)} style={selectStyle}>
-                {["LOCAL", "Together", "Fireworks", "Mistral", "OpenAI"].map(group => {
+                {["LOCAL", "Together", "Mistral", "OpenAI"].map(group => {
                   const groupModels = MODELS.filter(m => m.group === group);
                   if (!groupModels.length) return null;
                   return (
